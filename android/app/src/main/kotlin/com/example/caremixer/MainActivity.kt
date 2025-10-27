@@ -1,0 +1,5 @@
+package com.example.caremixer
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity()

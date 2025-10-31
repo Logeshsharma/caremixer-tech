@@ -32,8 +32,18 @@ class PokemonRepositoryRemote implements PokemonRepository {
 
       final pokemonResponse = await _apiService.getPokemons(nextSet);
 
-      return Result.ok(PokemonDomian(pokemonResponse.results ?? [],
-          pokemonResponse.next ?? 'offset=0&limit=10'));
+      String nextCursor = '';
+      if (pokemonResponse.next != null && pokemonResponse.next!.isNotEmpty) {
+        final uri = Uri.parse(pokemonResponse.next!);
+        nextCursor = uri.query;
+      }
+
+      return Result.ok(
+        PokemonDomian(
+          pokemonResponse.results ?? [],
+          nextCursor,
+        ),
+      );
     } on DioException catch (e) {
       return Result.error(_handleDioException(e));
     } catch (e) {

@@ -1,4 +1,5 @@
-import 'package:caremixer/ui/timeline_list/widgets/timeline_list_screen.dart';
+import 'package:caremixer/ui/core/themes/theme.dart';
+import 'package:caremixer/ui/pokemon_list/widgets/pokemon_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,8 +12,9 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: TimelineListScreen(),
+    return MaterialApp(
+      theme: AppTheme.lightTheme,
+      home: const PokemonListScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

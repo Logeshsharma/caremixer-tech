@@ -5,79 +5,113 @@ import 'package:caremixer/domain/models/pokemon_domian.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../utils/result.dart';
 
-// List state
 class PokemonListState {
   final List<Pokemon> pokemons;
   final bool isLoading;
+  final bool isLoadingMore;
   final String? error;
   final String? nextSet;
+  final bool hasMore;
 
   const PokemonListState({
     this.pokemons = const [],
     this.isLoading = false,
+    this.isLoadingMore = false,
     this.error,
     this.nextSet,
+    this.hasMore = true,
   });
 
   PokemonListState copyWith({
     List<Pokemon>? pokemons,
     bool? isLoading,
+    bool? isLoadingMore,
     String? error,
     String? nextSet,
+    bool? hasMore,
   }) {
     return PokemonListState(
       pokemons: pokemons ?? this.pokemons,
       isLoading: isLoading ?? this.isLoading,
+      isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       error: error,
       nextSet: nextSet ?? this.nextSet,
+      hasMore: hasMore ?? this.hasMore,
     );
   }
 }
 
-// List notifier
 class PokemonListNotifier extends StateNotifier<PokemonListState> {
   PokemonListNotifier(this._repository) : super(const PokemonListState()) {
-    loadlist();
+    loadInitial();
   }
 
   final PokemonRepository _repository;
 
-  void refresh() {
-    loadlist();
+  Future<void> refresh() async {
+    state = const PokemonListState();
+    await loadInitial();
   }
 
-  void loadMore() {
-    loadlist(nextSet: state.nextSet ?? 'offset=0&limit=10');
+  Future<void> loadInitial() async {
+    if (state.isLoading) return; 
+
+    state = state.copyWith(
+      isLoading: true,
+      error: null,
+      pokemons: [], 
+    );
+
+    await _loadData('offset=0&limit=20');
   }
 
-  Future<void> loadlist({String nextSet = 'offset=0&limit=10'}) async {
-    state = state.copyWith(isLoading: true, error: null);
+  Future<void> loadMore() async {
+    if (state.isLoadingMore || !state.hasMore || state.isLoading) return;
 
+    if (state.nextSet == null || state.nextSet!.isEmpty) {
+      state = state.copyWith(hasMore: false);
+      return;
+    }
+
+    state = state.copyWith(isLoadingMore: true, error: null);
+    await _loadData(state.nextSet!);
+  }
+
+  Future<void> _loadData(String nextSet) async {
     final result = await _repository.getPokemons(nextSet);
 
     switch (result) {
       case Ok<PokemonDomian>():
+        final newPokemons = result.value.pokemon;
+        final cursor = result.value.cursor;
+
+        final hasMore = cursor.isNotEmpty && newPokemons.isNotEmpty;
+
         state = state.copyWith(
-          pokemons: [...state.pokemons, ...result.value.pokemon],
+          pokemons: [...state.pokemons, ...newPokemons],
           isLoading: false,
-          nextSet: result.value.cursor,
+          isLoadingMore: false,
+          nextSet: cursor,
+          hasMore: hasMore,
           error: null,
         );
-
         break;
+
       case Error<PokemonDomian>():
-        // Use the specific error message from the remote API
         final errorMessage = result.error.toString().replaceFirst(
-              'Exception: ',
-              '',
-            );
-        state = state.copyWith(isLoading: false, error: errorMessage);
+          'Exception: ',
+          '',
+        );
+        state = state.copyWith(
+          isLoading: false,
+          isLoadingMore: false,
+          error: errorMessage,
+        );
         break;
     }
   }
 }
 
-// Provider
 final pokemonListProvider =
     StateNotifierProvider<PokemonListNotifier, PokemonListState>((ref) {
   final repository = ref.watch(repositoryProvider);

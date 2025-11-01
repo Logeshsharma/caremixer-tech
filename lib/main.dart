@@ -1,5 +1,5 @@
 import 'package:caremixer/ui/core/themes/theme.dart';
-import 'package:caremixer/ui/pokemon_list/widgets/pokemon_list_screen.dart';
+import 'package:caremixer/ui/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,7 +14,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: AppTheme.lightTheme,
-      home: const PokemonListScreen(),
+      home: const HomeScreen(),
       debugShowCheckedModeBanner: false,
     );
   }

@@ -63,7 +63,7 @@ class PokemonUtils {
 
   /// Get a lighter shade of the color for card background
   static Color getLightColor(Color color) {
-    return color.withOpacity(0.3);
+    return color.withValues(alpha: 0.5);
   }
 
   /// Get type icon based on Pokemon ID (simplified)

@@ -1,3 +1,4 @@
+import 'package:caremixer/ui/core/constants/app_colors.dart';
 import 'package:caremixer/ui/core/ui/header.dart';
 import 'package:caremixer/ui/pokemon_list/providers/pokemon_list_provider.dart';
 import 'package:caremixer/ui/pokemon_list/providers/ui_state_provider.dart';
@@ -58,7 +59,10 @@ class _PokemonListScreenState extends ConsumerState<PokemonListScreen> {
     if (distanceFromBottom > threshold) return;
 
     final state = ref.read(pokemonListProvider);
-    if (state.isLoading || state.isLoadingMore || !state.hasMore || state.error != null) {
+    if (state.isLoading ||
+        state.isLoadingMore ||
+        !state.hasMore ||
+        state.error != null) {
       return;
     }
 
@@ -78,8 +82,9 @@ class _PokemonListScreenState extends ConsumerState<PokemonListScreen> {
     final state = ref.watch(pokemonListProvider);
     final uiState = ref.watch(pokemonListUIProvider);
 
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF8F9FA),
+      backgroundColor: AppColors.background,
       body: SafeArea(
         child: Column(
           children: [
@@ -119,7 +124,7 @@ class _PokemonListScreenState extends ConsumerState<PokemonListScreen> {
   }
 }
 
-// Header 
+// Header
 class _SearchHeader extends ConsumerWidget {
   final TextEditingController searchController;
   final String searchQuery;
@@ -134,7 +139,7 @@ class _SearchHeader extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-       const ScreenHeader( title: 'Pokemon'),
+        const ScreenHeader(title: 'Pokemon'),
         const SizedBox(height: 16),
         _SearchBar(
           controller: searchController,
@@ -157,7 +162,7 @@ class _SearchBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 8 ),
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 8),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
         decoration: BoxDecoration(
@@ -201,7 +206,7 @@ class _SearchBar extends ConsumerWidget {
   }
 }
 
-// Content 
+// Content
 class _PokemonListContent extends ConsumerWidget {
   final ScrollController scrollController;
   final PokemonListState state;
@@ -379,7 +384,7 @@ class _ScrollToTopButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       onPressed: onPressed,
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.scrollToTopFab,
       child: const Icon(
         Icons.arrow_upward,
         color: Colors.white,

@@ -1,3 +1,4 @@
+import 'package:caremixer/ui/core/ui/header.dart';
 import 'package:caremixer/ui/pokemon_list/providers/pokemon_list_provider.dart';
 import 'package:caremixer/ui/pokemon_list/providers/ui_state_provider.dart';
 import 'package:caremixer/ui/pokemon_list/utils/pokemon_utils.dart';
@@ -98,8 +99,12 @@ class _PokemonListScreenState extends ConsumerState<PokemonListScreen> {
         ),
       ),
       floatingActionButton: uiState.showScrollToTop
-          ? _ScrollToTopButton(onPressed: _scrollToTop)
+          ? Padding(
+              padding: const EdgeInsets.only(bottom: 80),
+              child: _ScrollToTopButton(onPressed: _scrollToTop),
+            )
           : null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
@@ -126,28 +131,16 @@ class _SearchHeader extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 12),
-      decoration: const BoxDecoration(color: Colors.white),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Pokemon',
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-              letterSpacing: -0.5,
-            ),
-          ),
-          const SizedBox(height: 16),
-          _SearchBar(
-            controller: searchController,
-            searchQuery: searchQuery,
-          ),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+       const ScreenHeader( title: 'Pokemon'),
+        const SizedBox(height: 16),
+        _SearchBar(
+          controller: searchController,
+          searchQuery: searchQuery,
+        ),
+      ],
     );
   }
 }
@@ -163,42 +156,45 @@ class _SearchBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(14),
-      ),
-      child: TextField(
-        controller: controller,
-        onChanged: (value) {
-          ref.read(pokemonListUIProvider.notifier).setSearchQuery(value);
-        },
-        decoration: InputDecoration(
-          hintText: 'Search Pokemon...',
-          hintStyle: TextStyle(
-            color: Colors.grey.shade400,
-            fontSize: 15,
+    return Padding(
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 8 ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+        decoration: BoxDecoration(
+          color: Colors.grey.shade200,
+          borderRadius: BorderRadius.circular(14),
+        ),
+        child: TextField(
+          controller: controller,
+          onChanged: (value) {
+            ref.read(pokemonListUIProvider.notifier).setSearchQuery(value);
+          },
+          decoration: InputDecoration(
+            hintText: 'Search Pokemon...',
+            hintStyle: TextStyle(
+              color: Colors.grey.shade400,
+              fontSize: 15,
+            ),
+            border: InputBorder.none,
+            icon: Icon(
+              Icons.search,
+              color: Colors.grey.shade400,
+              size: 22,
+            ),
+            suffixIcon: searchQuery.isNotEmpty
+                ? IconButton(
+                    icon: Icon(
+                      Icons.clear,
+                      color: Colors.grey.shade400,
+                      size: 20,
+                    ),
+                    onPressed: () {
+                      controller.clear();
+                      ref.read(pokemonListUIProvider.notifier).clearSearch();
+                    },
+                  )
+                : null,
           ),
-          border: InputBorder.none,
-          icon: Icon(
-            Icons.search,
-            color: Colors.grey.shade400,
-            size: 22,
-          ),
-          suffixIcon: searchQuery.isNotEmpty
-              ? IconButton(
-                  icon: Icon(
-                    Icons.clear,
-                    color: Colors.grey.shade400,
-                    size: 20,
-                  ),
-                  onPressed: () {
-                    controller.clear();
-                    ref.read(pokemonListUIProvider.notifier).clearSearch();
-                  },
-                )
-              : null,
         ),
       ),
     );
@@ -238,6 +234,7 @@ class _PokemonListContent extends ConsumerWidget {
     return RefreshIndicator(
       color: Colors.black,
       strokeWidth: 2,
+      backgroundColor: Colors.white,
       onRefresh: () async {
         await ref.read(pokemonListProvider.notifier).refresh();
       },

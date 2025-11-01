@@ -1,4 +1,5 @@
 import 'package:caremixer/data/models/timeline_event.dart';
+import 'package:caremixer/ui/core/constants/app_colors.dart';
 import 'package:caremixer/ui/core/ui/header.dart';
 import 'package:flutter/material.dart';
 
@@ -8,7 +9,7 @@ class TimelineListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFAFA),
+      backgroundColor: AppColors.gray50,
       body: SafeArea(
         child: Column(
           children: [
@@ -58,10 +59,10 @@ class _TimelineEventCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isAudit = event.type == 'audit';
     final eventColor =
-        isAudit ? const Color(0xFF6366F1) : const Color(0xFF10B981);
-    final bgColor = isAudit ? const Color(0xFFEEF2FF) : const Color(0xFFECFDF5);
+        isAudit ? AppColors.timelineAudit : AppColors.timelineNote;
+    final bgColor = isAudit ? AppColors.timelineAuditBg : AppColors.timelineNoteBg;
     final lightColor =
-        isAudit ? const Color(0xFFC7D2FE) : const Color(0xFFD1FAE5);
+        isAudit ? AppColors.timelineAuditLight : AppColors.timelineNoteLight;
 
     return IntrinsicHeight(
       child: Row(
@@ -149,10 +150,10 @@ class _EventCard extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(left: 40),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.surface,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: const Color(0xFFE5E7EB),
+                color: AppColors.border,
                 width: 1,
               ),
             ),
@@ -184,7 +185,7 @@ class _EventCard extends StatelessWidget {
                           style: const TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w600,
-                            color: Color(0xFF111827),
+                            color: AppColors.textPrimary,
                             letterSpacing: -0.2,
                           ),
                         ),
@@ -219,14 +220,14 @@ class _EventCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                const Divider(height: 1, color: Color(0xFFF3F4F6)),
+                const Divider(height: 1, color: AppColors.divider),
                 Padding(
                   padding: const EdgeInsets.all(14),
                   child: Text(
                     event.message,
                     style: const TextStyle(
                       fontSize: 13,
-                      color: Color(0xFF6B7280),
+                      color: AppColors.textSecondary,
                       height: 1.5,
                     ),
                   ),

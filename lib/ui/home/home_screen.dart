@@ -1,37 +1,27 @@
-import 'package:caremixer/ui/pokemon_list/widgets/pokemon_list_screen.dart';
-import 'package:caremixer/ui/timeline_list/widgets/timeline_list_screen.dart';
+import 'package:caremixer/routing/routes.dart';
+import 'package:caremixer/ui/core/constants/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-final selectedTabProvider = StateProvider<int>((ref) => 0);
+import 'package:go_router/go_router.dart';
 
 class HomeScreen extends ConsumerWidget {
-  const HomeScreen({super.key});
+  final Widget child;
+
+  const HomeScreen({super.key, required this.child});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedIndex = ref.watch(selectedTabProvider);
-
-    final screens = [
-      const TimelineListScreen(),
-      const PokemonListScreen(),
-    ];
+    final currentLocation = GoRouterState.of(context).uri.toString();
+    final selectedIndex = _getSelectedIndex(currentLocation);
 
     return Scaffold(
-      body: IndexedStack(
-        index: selectedIndex,
-        children: screens,
-      ),
+      body: child,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Chat feature coming soon!'),
-              duration: Duration(seconds: 2),
-            ),
-          );
+          context.push(Routes.chat);
         },
-        backgroundColor: const Color(0xFF6366F1),
+        backgroundColor: AppColors.fabBackground,
         elevation: 4,
         child: const Icon(
           Icons.chat_bubble_outline,
@@ -44,20 +34,18 @@ class HomeScreen extends ConsumerWidget {
         decoration: const BoxDecoration(
           border: Border(
             top: BorderSide(
-              color: Color(0xFFE5E7EB),
+              color: AppColors.border,
               width: 1,
             ),
           ),
         ),
         child: BottomNavigationBar(
           currentIndex: selectedIndex,
-          onTap: (index) {
-            ref.read(selectedTabProvider.notifier).state = index;
-          },
+          onTap: (index) => _handleNavigationItemSelected(index, context),
           type: BottomNavigationBarType.fixed,
-          backgroundColor: Colors.white,
-          selectedItemColor: const Color(0xFF6366F1),
-          unselectedItemColor: const Color(0xFF9CA3AF),
+          backgroundColor: AppColors.surface,
+          selectedItemColor: AppColors.selectedTab,
+          unselectedItemColor: AppColors.unselectedTab,
           selectedFontSize: 12,
           unselectedFontSize: 12,
           selectedLabelStyle: const TextStyle(
@@ -73,7 +61,7 @@ class HomeScreen extends ConsumerWidget {
               activeIcon: Icon(Icons.timeline),
               label: 'Timeline',
             ),
-             BottomNavigationBarItem(
+            BottomNavigationBarItem(
               icon: Icon(Icons.catching_pokemon_outlined),
               activeIcon: Icon(Icons.catching_pokemon),
               label: 'Pokemon',
@@ -82,5 +70,26 @@ class HomeScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  int _getSelectedIndex(String location) {
+    if (location.startsWith(Routes.timeline)) return 0;
+    if (location.startsWith(Routes.pokemonList)) return 1;
+    return 0;
+  }
+
+  void _handleNavigationItemSelected(int index, BuildContext context) {
+    HapticFeedback.lightImpact();
+
+    switch (index) {
+      case 0:
+        context.go(Routes.timeline);
+        break;
+      case 1:
+        context.go(Routes.pokemonList);
+        break;
+      default:
+        break;
+    }
   }
 }

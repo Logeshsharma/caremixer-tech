@@ -2,8 +2,6 @@
 
 A Flutter application featuring timeline events UI, Pokemon browsing, and chat functionality with modern UI/UX design.
 
-## Video
-
 ## Features
 
 ### Timeline Screen

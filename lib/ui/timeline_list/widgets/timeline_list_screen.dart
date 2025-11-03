@@ -31,7 +31,9 @@ class _TimelineContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 35, vertical: 24),
-      physics: const ClampingScrollPhysics(),
+      physics: const AlwaysScrollableScrollPhysics(
+        parent: BouncingScrollPhysics(),
+      ),
       itemCount: timelineData.length,
       itemBuilder: (context, index) {
         return _TimelineEventCard(

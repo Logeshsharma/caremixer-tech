@@ -1,5 +1,6 @@
 import 'package:caremixer/routing/router.dart';
 import 'package:caremixer/ui/core/themes/theme.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -17,6 +18,14 @@ class MainApp extends ConsumerWidget {
       routerConfig: router,
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
+      scrollBehavior: const MaterialScrollBehavior().copyWith(
+        dragDevices: {
+          PointerDeviceKind.mouse,
+          PointerDeviceKind.touch,
+          PointerDeviceKind.stylus,
+          PointerDeviceKind.trackpad,
+        },
+      ),
     );
   }
 }

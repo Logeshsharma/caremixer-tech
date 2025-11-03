@@ -246,7 +246,9 @@ class _PokemonListContent extends ConsumerWidget {
       child: ListView.builder(
         controller: scrollController,
         padding: const EdgeInsets.all(20),
-        physics: const ClampingScrollPhysics(),
+        physics: const AlwaysScrollableScrollPhysics(
+          parent: BouncingScrollPhysics(),
+        ),
         addAutomaticKeepAlives: true,
         addRepaintBoundaries: true,
         cacheExtent: 500,
